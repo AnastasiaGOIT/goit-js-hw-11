@@ -1,0 +1,11 @@
+.gallery {
+  /* display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto; */
+}
+
+.photo-card {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
