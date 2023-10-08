@@ -36,4 +36,4 @@ async function serviceImages(image) {
   //   console.log(resp);
 }
 // btn.addEventListener('click');
-function markUp() {}
+// function markUp() {}
