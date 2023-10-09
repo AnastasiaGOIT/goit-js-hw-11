@@ -1,11 +1,70 @@
 .gallery {
-  /* display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto; */
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 50px;
+  justify-content: space-around;
+}
+.img {
+  overflow: hidden;
+  max-width: 100%;
+}
+.photo-card {
+  margin-bottom: 20px;
+  border: 2px solid #000;
 }
 
-.photo-card {
+.info {
+  font-size: 20;
+  text-align: center;
+}
+
+.info-item b {
+  margin-right: 10px;
+}
+
+.search-form {
+  padding: 5px;
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  justify-content: center;
+}
+
+.search-form input {
+  padding-left: 50px;
+  padding-right: 40px;
+  border-radius: 25px;
+  border-color: darkmagenta;
+}
+.search-btn {
+  margin-left: 20px;
+  padding: 6px 20px;
+  font-size: 20;
+  border-radius: 25;
+  color: indigo;
+  background-color: antiquewhite;
+  border-color: blueviolet;
+}
+.search-btn:disabled {
+  background-color: rgb(172, 155, 155);
+}
+.search-btn:not(:disabled):hover {
+  background-color: burlywood;
+  cursor: pointer;
+  transition: background-color 500ms ease, color 500ms ease;
+}
+.load-more {
+  margin-left: 20px;
+  padding: 6px 20px;
+  font-size: 20;
+  border-radius: 25;
+  color: indigo;
+  background-color: azure;
+  border-color: blueviolet;
+  display: block;
+  margin: 0 auto;
+  display: none;
+}
+.load-more:hover {
+  background-color: burlywood;
+  cursor: pointer;
+  transition: background-color 500ms ease, color 500ms ease;
 }
