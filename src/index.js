@@ -6,27 +6,41 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 const form = document.querySelector('.search-form');
 const btn = document.querySelector('.search-btn');
 const container = document.querySelector('.gallery');
-const loadBtn = document.querySelector('.load-more');
+// const loadBtn = document.querySelector('.load-more');
 
-// const target = document.querySelector('.js-guard');
-
-// let counter = 0;
-
-// let options = {
-//   root: null,
-//   rootMargin: '200px',
-//   threshold: 1.0,
-// };
-// let observer = new IntersectionObserver(callback, options);
-
-// function callback(e) {
-//   console.log(e);
-// }
+const target = document.querySelector('.js-guard');
 
 let page = 1;
+
 form.addEventListener('submit', handleSearch);
 
-loadBtn.addEventListener('click', onLoad);
+let options = {
+  root: null,
+  rootMargin: '300px',
+  threshold: 1.0,
+};
+let observer = new IntersectionObserver(onLoadScroll, options);
+
+function onLoadScroll(entries, observer) {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      page += 1;
+      const input = form.elements.searchQuery;
+      const inputValue = input.value.trim();
+      const data = serviceImages(inputValue, page);
+      const markupEl = markUp(data.hits);
+      container.innerHTML += markupEl;
+      if (page > data.totalHits / 40) {
+        observer.unobserve(target);
+        Notiflix.Notify.info(
+          "We're sorry, but you've reached the end of search results."
+        );
+      }
+    }
+  });
+}
+
+// loadBtn.addEventListener('click', onLoad);
 
 async function handleSearch(e) {
   e.preventDefault();
@@ -41,11 +55,17 @@ async function handleSearch(e) {
   }
   try {
     const data = await serviceImages(inputValue);
-    loadBtn.style.display = 'block';
+    // if (data.hits.length >= 40) {
+    //   loadBtn.style.display = 'block';
+    // } else {
+    //   loadBtn.style.display = 'none';
+    // }
     const markupEl = markUp(data.hits);
     container.innerHTML = markupEl;
+    observer.observe(target);
+    let gallery = new SimpleLightbox('.photo-card a');
+    gallery.refresh();
 
-    // observer.observe(target);
     Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
   } catch (error) {
     Notiflix.Notify.failure(
@@ -70,9 +90,8 @@ async function serviceImages(image, page) {
 }
 
 function markUp(images) {
-  return images
-    .map(
-      image => `<div class="photo-card"> 
+  return images.map(
+    image => `<div class="photo-card"> 
   <a href="${image.largeImageURL}"><img class='img' src="${image.webformatURL}" alt="${image.tags}" width='300' loading="lazy" /></a>
   <div class="info">
     <p class="info-item">
@@ -89,38 +108,35 @@ function markUp(images) {
     </p>
   </div>
 </div>`
-    )
-    .join('');
+  );
 }
-let gallery = new SimpleLightbox('.photo-card a');
-gallery.refresh();
 
-async function onLoad() {
-  page += 1;
-  loadBtn.disabled = true;
-  const input = form.elements.searchQuery;
-  const inputValue = input.value.trim();
-  const data = await serviceImages(inputValue, page);
+// async function onLoad() {
+//   page += 1;
+//   // loadBtn.disabled = true;
+//   const input = form.elements.searchQuery;
+//   const inputValue = input.value.trim();
+//   const data = await serviceImages(inputValue, page);
 
-  if (page > data.totalHits / 40) {
-    loadBtn.style.display = 'none';
-    Notiflix.Notify.info(
-      "We're sorry, but you've reached the end of search results."
-    );
-  } else {
-    loadBtn.hidden = false;
-  }
-  const markupEl = markUp(data.hits);
-  container.innerHTML += markupEl;
-  loadBtn.disabled = false;
+//   // if (page > data.totalHits / 40) {
+//   //   loadBtn.style.display = 'none';
+//   //   Notiflix.Notify.info(
+//   //     "We're sorry, but you've reached the end of search results."
+//   //   );
+//   // } else {
+//   //   loadBtn.hidden = false;
+//   // }
+//   const markupEl = markUp(data.hits);
+//   container.innerHTML += markupEl;
+//   loadBtn.disabled = false;
 
-  console.log(page);
-  const { height: cardHeight } = document
-    .querySelector('.gallery')
-    .firstElementChild.getBoundingClientRect();
+//   console.log(page);
+//   const { height: cardHeight } = document
+//     .querySelector('.gallery')
+//     .firstElementChild.getBoundingClientRect();
 
-  window.scrollBy({
-    top: cardHeight * 2,
-    behavior: 'smooth',
-  });
-}
+//   window.scrollBy({
+//     top: cardHeight * 2,
+//     behavior: 'smooth',
+//   });
+// }
