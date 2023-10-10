@@ -90,8 +90,9 @@ async function serviceImages(image, page) {
 }
 
 function markUp(images) {
-  return images.map(
-    image => `<div class="photo-card"> 
+  return images
+    .map(
+      image => `<div class="photo-card"> 
   <a href="${image.largeImageURL}"><img class='img' src="${image.webformatURL}" alt="${image.tags}" width='300' loading="lazy" /></a>
   <div class="info">
     <p class="info-item">
@@ -108,7 +109,8 @@ function markUp(images) {
     </p>
   </div>
 </div>`
-  );
+    )
+    .join('');
 }
 
 // async function onLoad() {
