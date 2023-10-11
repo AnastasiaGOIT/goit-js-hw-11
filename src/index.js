@@ -6,14 +6,11 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 const form = document.querySelector('.search-form');
 const btn = document.querySelector('.search-btn');
 const container = document.querySelector('.gallery');
-// const loadBtn = document.querySelector('.load-more');
 form.addEventListener('submit', handleSearch);
 
 const target = document.querySelector('.js-guard');
 
 let page = 1;
-
-// loadBtn.addEventListener('click', onLoad);
 
 async function handleSearch(e) {
   e.preventDefault();
@@ -28,20 +25,11 @@ async function handleSearch(e) {
   }
   try {
     const data = await serviceImages(inputValue);
-
-    // if (data.hits.length >= 40) {
-    //   loadBtn.style.display = 'block';
-    // } else {
-    //   loadBtn.style.display = 'none';
-    // }
     const markupEl = markUp(data.hits);
     container.innerHTML = markupEl;
     observer.observe(target);
     let gallery = new SimpleLightbox('.photo-card a');
     gallery.refresh();
-    // if (data.hits.length >= 40) {
-    //   onLoadScroll(data.hits);
-    // }
 
     Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
   } catch (error) {
@@ -50,7 +38,6 @@ async function handleSearch(e) {
     );
   } finally {
     form.reset();
-    // loadBtn.style.display = 'none';
     btn.disabled = false;
   }
 }
@@ -62,7 +49,7 @@ let options = {
 };
 
 let observer = new IntersectionObserver(onLoadScroll, options);
-// observer.observe(target);
+
 async function onLoadScroll(entries) {
   entries.forEach(async entry => {
     if (entry.isIntersecting) {
@@ -72,7 +59,6 @@ async function onLoadScroll(entries) {
       const data = await serviceImages(inputValue, page);
       const markupEl = markUp(data.hits);
       container.innerHTML += markupEl;
-
       if (page > data.totalHits / 40) {
         observer.unobserve(target);
         Notiflix.Notify.info(
@@ -80,6 +66,14 @@ async function onLoadScroll(entries) {
         );
       }
     }
+    const { height: cardHeight } = document
+      .querySelector('.gallery')
+      .firstElementChild.getBoundingClientRect();
+
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
   });
 }
 
@@ -90,7 +84,7 @@ async function serviceImages(image, page) {
     `${BASE_URL}?key=${KEY}&q=${image}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=40`
   );
   const response = resp.data;
-  console.log(response);
+
   return response;
 }
 
@@ -117,33 +111,3 @@ function markUp(images) {
     )
     .join('');
 }
-
-// async function onLoad() {
-//   page += 1;
-//   // loadBtn.disabled = true;
-//   const input = form.elements.searchQuery;
-//   const inputValue = input.value.trim();
-//   const data = await serviceImages(inputValue, page);
-
-//   // if (page > data.totalHits / 40) {
-//   //   loadBtn.style.display = 'none';
-//   //   Notiflix.Notify.info(
-//   //     "We're sorry, but you've reached the end of search results."
-//   //   );
-//   // } else {
-//   //   loadBtn.hidden = false;
-//   // }
-//   const markupEl = markUp(data.hits);
-//   container.innerHTML += markupEl;
-//   loadBtn.disabled = false;
-
-//   console.log(page);
-//   const { height: cardHeight } = document
-//     .querySelector('.gallery')
-//     .firstElementChild.getBoundingClientRect();
-
-//   window.scrollBy({
-//     top: cardHeight * 2,
-//     behavior: 'smooth',
-//   });
-// }
