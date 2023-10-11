@@ -7,29 +7,32 @@ const form = document.querySelector('.search-form');
 const btn = document.querySelector('.search-btn');
 const container = document.querySelector('.gallery');
 // const loadBtn = document.querySelector('.load-more');
+form.addEventListener('submit', handleSearch);
 
 const target = document.querySelector('.js-guard');
 
 let page = 1;
 
-form.addEventListener('submit', handleSearch);
+// loadBtn.addEventListener('click', onLoad);
 
 let options = {
   root: null,
   rootMargin: '300px',
   threshold: 1.0,
 };
-let observer = new IntersectionObserver(onLoadScroll, options);
 
-function onLoadScroll(entries, observer) {
+let observer = new IntersectionObserver(onLoadScroll, options);
+observer.observe(target);
+async function onLoadScroll(entries) {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       page += 1;
       const input = form.elements.searchQuery;
       const inputValue = input.value.trim();
-      const data = serviceImages(inputValue, page);
+      const data = await serviceImages(inputValue, page);
       const markupEl = markUp(data.hits);
       container.innerHTML += markupEl;
+
       if (page > data.totalHits / 40) {
         observer.unobserve(target);
         Notiflix.Notify.info(
@@ -39,8 +42,6 @@ function onLoadScroll(entries, observer) {
     }
   });
 }
-
-// loadBtn.addEventListener('click', onLoad);
 
 async function handleSearch(e) {
   e.preventDefault();
@@ -55,16 +56,20 @@ async function handleSearch(e) {
   }
   try {
     const data = await serviceImages(inputValue);
+
     // if (data.hits.length >= 40) {
     //   loadBtn.style.display = 'block';
     // } else {
     //   loadBtn.style.display = 'none';
     // }
-    const markupEl = markUp(data.hits);
+    const markupEl = await markUp(data.hits);
     container.innerHTML = markupEl;
-    observer.observe(target);
+    // observer.observe(target);
     let gallery = new SimpleLightbox('.photo-card a');
     gallery.refresh();
+    // if (data.hits.length >= 40) {
+    //   onLoadScroll(data.hits);
+    // }
 
     Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
   } catch (error) {
