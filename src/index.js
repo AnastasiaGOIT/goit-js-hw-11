@@ -15,34 +15,6 @@ let page = 1;
 
 // loadBtn.addEventListener('click', onLoad);
 
-let options = {
-  root: null,
-  rootMargin: '300px',
-  threshold: 1.0,
-};
-
-let observer = new IntersectionObserver(onLoadScroll, options);
-observer.observe(target);
-async function onLoadScroll(entries) {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      page += 1;
-      const input = form.elements.searchQuery;
-      const inputValue = input.value.trim();
-      const data = await serviceImages(inputValue, page);
-      const markupEl = markUp(data.hits);
-      container.innerHTML += markupEl;
-
-      if (page > data.totalHits / 40) {
-        observer.unobserve(target);
-        Notiflix.Notify.info(
-          "We're sorry, but you've reached the end of search results."
-        );
-      }
-    }
-  });
-}
-
 async function handleSearch(e) {
   e.preventDefault();
   btn.disabled = true;
@@ -62,9 +34,9 @@ async function handleSearch(e) {
     // } else {
     //   loadBtn.style.display = 'none';
     // }
-    const markupEl = await markUp(data.hits);
+    const markupEl = markUp(data.hits);
     container.innerHTML = markupEl;
-    // observer.observe(target);
+    observer.observe(target);
     let gallery = new SimpleLightbox('.photo-card a');
     gallery.refresh();
     // if (data.hits.length >= 40) {
@@ -81,6 +53,34 @@ async function handleSearch(e) {
     // loadBtn.style.display = 'none';
     btn.disabled = false;
   }
+}
+
+let options = {
+  root: null,
+  rootMargin: '300px',
+  threshold: 1.0,
+};
+
+let observer = new IntersectionObserver(onLoadScroll, options);
+// observer.observe(target);
+async function onLoadScroll(entries) {
+  entries.forEach(async entry => {
+    if (entry.isIntersecting) {
+      page += 1;
+      const input = form.elements.searchQuery;
+      const inputValue = input.value.trim();
+      const data = await serviceImages(inputValue, page);
+      const markupEl = markUp(data.hits);
+      container.innerHTML += markupEl;
+
+      if (page > data.totalHits / 40) {
+        observer.unobserve(target);
+        Notiflix.Notify.info(
+          "We're sorry, but you've reached the end of search results."
+        );
+      }
+    }
+  });
 }
 
 async function serviceImages(image, page) {
