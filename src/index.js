@@ -10,7 +10,7 @@ const container = document.querySelector('.gallery');
 form.addEventListener('submit', handleSearch);
 
 const target = document.querySelector('.js-guard');
-
+let gallery = new SimpleLightbox('.photo-card a');
 let page = 1;
 
 axios.defaults.baseURL = 'https://pixabay.com/api/';
@@ -42,9 +42,7 @@ async function handleSearch(e) {
       Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
       return;
     }
-
     observer.observe(target);
-    let gallery = new SimpleLightbox('.photo-card a');
     gallery.refresh();
     Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
   } catch (error) {
@@ -78,9 +76,9 @@ async function onLoadScroll(entries) {
         Notiflix.Notify.info(
           "We're sorry, but you've reached the end of search results."
         );
+        smoothScroll();
       }
     }
-    smoothScroll();
   });
 }
 
