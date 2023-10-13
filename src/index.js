@@ -27,7 +27,7 @@ async function handleSearch(e) {
   e.preventDefault();
   btn.disabled = true;
   page = 1;
-  inputValue = getValue();
+  const inputValue = getValue();
 
   if (!inputValue) {
     btn.disabled = false;
