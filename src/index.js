@@ -67,7 +67,7 @@ async function onLoadScroll(entries) {
   entries.forEach(async entry => {
     if (entry.isIntersecting) {
       page += 1;
-      inputValue = getValue(form);
+      inputValue = getValue();
       const data = await serviceImages(inputValue, page);
       const markupEl = markUp(data.hits);
       container.innerHTML += markupEl;
