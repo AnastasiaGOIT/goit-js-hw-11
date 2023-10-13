@@ -18,7 +18,7 @@ const KEY = '39787944-43ec837227cb503858330c56a';
 
 function getValue() {
   const input = form.elements.searchQuery;
-  const inputValue = input.value.trim();
+  let inputValue = input.value.trim();
 
   return inputValue;
 }
@@ -27,7 +27,7 @@ async function handleSearch(e) {
   e.preventDefault();
   btn.disabled = true;
   page = 1;
-  const inputValue = getValue();
+  let inputValue = getValue();
 
   if (!inputValue) {
     btn.disabled = false;
@@ -67,7 +67,7 @@ async function onLoadScroll(entries) {
   entries.forEach(async entry => {
     if (entry.isIntersecting) {
       page += 1;
-      inputValue = getValue();
+      let inputValue = getValue();
       const data = await serviceImages(inputValue, page);
       const markupEl = markUp(data.hits);
       container.innerHTML += markupEl;
