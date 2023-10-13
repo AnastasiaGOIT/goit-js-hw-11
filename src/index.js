@@ -36,7 +36,7 @@ async function handleSearch(e) {
   }
   try {
     const data = await serviceImages(inputValue);
-    if (data.totalHits < 40) {
+    if (data.totalHits <= 40) {
       const markupEl = markUp(data.hits);
       container.innerHTML = markupEl;
       Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
