@@ -41,10 +41,11 @@ async function handleSearch(e) {
       container.innerHTML = markupEl;
       Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
       return;
+    } else {
+      observer.observe(target);
+      gallery.refresh();
+      Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
     }
-    observer.observe(target);
-    gallery.refresh();
-    Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
   } catch (error) {
     Notiflix.Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
